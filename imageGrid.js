@@ -72,7 +72,7 @@ $.fn.imageGrid = function () {
                 $image: image.$image
             });
 
-            if ((sumImagesWidthImage >= imageContainerWidth - sumImagesWidthStatic && checkSumImagesWidthImage(split, minImageHeight, imageContainerWidth - sumImagesWidthStatic) && split.length >= 2) || iterator === imagesCount - 1) {
+            if ((checkSumImagesWidthImage(split, minImageHeight, imageContainerWidth - sumImagesWidthStatic) && split.length >= minImageRow) || iterator === imagesCount - 1) {
                 var sumWidthGrid = 0;
 
                 split.map(function (image) {
@@ -112,7 +112,8 @@ $.fn.imageGrid = function () {
     }
 
     var imageContainerWidth = $self.width();
+    var minImageRow = $self.data('min-image-row');
     var images = getImages($self.children());
-    var splitImages = getSplitImages(imageContainerWidth, images);
+    var splitImages = getSplitImages(imageContainerWidth, images, minImageRow);
     setWidthImage(splitImages);
 };
