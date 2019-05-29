@@ -31,6 +31,25 @@ $.fn.imageGrid = function () {
         return result;
     }
 
+    function checkSumImagesWidthImage(split, minImageHeight, imageContainerWidth) {
+        var sumWidthGrid = 0;
+
+        split.map(function (image) {
+            if (minImageHeight <= image.sizes.heightImage) {
+                var widthGrid = image.sizes.widthImage/(image.sizes.heightImage/minImageHeight);
+
+                image.sizes.widthGrid = widthGrid;
+                sumWidthGrid += widthGrid;
+            }
+        });
+
+        if (sumWidthGrid < imageContainerWidth) {
+            return false;
+        }
+
+        return true;
+    }
+
     function getSplitImages(imageContainerWidth, images) {
         var result                  = [];
         var split                   = [];
@@ -53,7 +72,7 @@ $.fn.imageGrid = function () {
                 $image: image.$image
             });
 
-            if (sumImagesWidthImage >= imageContainerWidth - sumImagesWidthStatic || iterator === imagesCount - 1) {
+            if ((sumImagesWidthImage >= imageContainerWidth - sumImagesWidthStatic && checkSumImagesWidthImage(split, minImageHeight, imageContainerWidth - sumImagesWidthStatic) && split.length >= 2) || iterator === imagesCount - 1) {
                 var sumWidthGrid = 0;
 
                 split.map(function (image) {
@@ -72,11 +91,11 @@ $.fn.imageGrid = function () {
                     });
                 }
 
-
                 result.push(split);
 
-                sumImagesWidthImage     = 0;
-                sumImagesWidthStatic    = 0;
+                sumImagesWidthImage = 0;
+                sumImagesWidthStatic = 0;
+                minImageHeight = 9999;
                 split = [];
             }
         });
@@ -93,7 +112,7 @@ $.fn.imageGrid = function () {
     }
 
     var imageContainerWidth = $self.width();
-    var images              = getImages($self.children());
-    var splitImages         = getSplitImages(imageContainerWidth, images);
+    var images = getImages($self.children());
+    var splitImages = getSplitImages(imageContainerWidth, images);
     setWidthImage(splitImages);
 };
